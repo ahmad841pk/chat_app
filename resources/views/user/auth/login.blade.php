@@ -82,11 +82,20 @@
                                 </svg>
                                 <h2 class="brand-text text-primary ms-1">Vuexy</h2>
                             </a>
-
+                            @if ($errors->any())
+                                <div class="alert alert-danger mt-1 alert-validation-msg" role="alert">
+                                    @foreach ($errors->all() as $error)
+                                        <div class="alert-body d-flex align-items-center">
+                                            <i data-feather="info" class="me-50"></i>
+                                            <div>{{$error}}</div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endif
                             <h4 class="card-title mb-1">Welcome to Vuexy! 👋</h4>
                             <p class="card-text mb-2">Please sign-in to your account and start the adventure</p>
 
-                            <form class="auth-login-form mt-2" action="index.html" method="POST">
+                            <form class="auth-login-form mt-2" action="{{route('user.authentication')}}" method="POST">
                                 @csrf
                                 <div class="mb-1">
                                     <label for="login-email" class="form-label">Email</label>

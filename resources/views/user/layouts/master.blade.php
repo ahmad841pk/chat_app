@@ -6,8 +6,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0,minimal-ui">
-    <meta name="description" content="Vuexy admin is super flexible, powerful, clean &amp; modern responsive bootstrap 4 admin template with unlimited possibilities.">
-    <meta name="keywords" content="admin template, Vuexy admin template, dashboard template, flat admin template, responsive admin template, web app">
+    <meta name="description" content="Vuexy user is super flexible, powerful, clean &amp; modern responsive bootstrap 4 user template with unlimited possibilities.">
+    <meta name="keywords" content="user template, Vuexy user template, dashboard template, flat user template, responsive user template, web app">
     <meta name="author" content="PIXINVENT">
     <title>@yield('title')</title>
     <link rel="apple-touch-icon" href="{{asset('backend/app-assets/images/ico/apple-icon-120.png')}}">
@@ -43,16 +43,16 @@
 <body class="vertical-layout vertical-menu-modern  navbar-floating footer-static  " data-open="click" data-menu="vertical-menu-modern" data-col="">
 
 <!-- BEGIN: Header-->
-@include('admin.layouts.header')
+@include('user.layouts.header')
 <!-- END: Header-->
 
 
 <!-- BEGIN: Main Menu-->
-@include('admin.layouts.sidebar')
+@include('user.layouts.sidebar')
 <!-- END: Main Menu-->
 
 <!-- BEGIN: Content-->
-<div class="app-content content chat-application ">
+<div class="app-content content ">
     <div class="content-overlay"></div>
     <div class="header-navbar-shadow"></div>
     @yield('index')
@@ -63,7 +63,7 @@
 <div class="drag-target"></div>
 
 <!-- BEGIN: Footer-->
-@include('admin.layouts.footer')
+@include('user.layouts.footer')
 <!-- END: Footer-->
 
 

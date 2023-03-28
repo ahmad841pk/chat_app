@@ -38,8 +38,9 @@
     <div class="shadow-bottom"></div>
     <div class="main-menu-content">
         <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
-            <li class="{{($route =='admin.dashboard')?'active' : ""}} nav-item"><a class="d-flex align-items-center" href="{{route('admin.dashboard')}}"><i data-feather='home'></i><span class="menu-title text-truncate" data-i18n="Home">Dashboard</span></a>
-            <li class=" {{$route=='admin.chat' ? 'active' : ""}} nav-item"><a class="d-flex align-items-center" href="{{route('admin.chat')}}"><i data-feather='settings'></i><span class="menu-title text-truncate" data-i18n="Home">Chats</span></a></li>
+            <li class="{{($route =='dashboard')?'active' : ""}} nav-item"><a class="d-flex align-items-center" href="{{route('dashboard')}}"><i data-feather='home'></i><span class="menu-title text-truncate" data-i18n="Home">Dashboard</span></a>
+            <li class=" {{$route=='/user/chat' ? 'active' : ""}} nav-item"><a class="d-flex align-items-center" href=""><i data-feather='settings'></i><span class="menu-title text-truncate" data-i18n="Home">Chats</span></a>
+                    </li>
                 </ul>
     </div>
 </div>
