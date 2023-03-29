@@ -18,7 +18,7 @@ class Message extends Model
     {
         return $this->belongsTo(Admin::class,'creator_id');
     }
-    public function recipient()
+    public function messageRecipient()
     {
         return $this->hasOne(MessageRecipient::class);
     }

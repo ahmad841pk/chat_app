@@ -13,15 +13,13 @@ Route::prefix('admin')->group(function () {
     Route::post('login',[LoginController::class,'authenticate'])->name('admin.authentication');
 
 Route::middleware('auth:admin')->group(function () {
+
+    Route::get('/dashboard', function () {
+        return view('admin.index');})->name('admin.dashboard');
+
     Route::get('logout',[LoginController::class,'logout'])->name('admin.logout');
-        Route::get('/dashboard', function () {
-            return view('admin.index');
-        })->name('admin.dashboard');
 
-        Route::get('/chat', function () {
-            return view('admin.chat.index');
-        })->name('admin.chat');
-
+    Route::get('/chat', [ChatsController::class,'index'])->name('admin.chat');
     Route::get('/messages', [ChatsController::class, 'fetchMessages']);
     Route::post('/messages', [ChatsController::class, 'sendMessage'])->name('send.message');
 
