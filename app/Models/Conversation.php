@@ -11,21 +11,20 @@ class Conversation extends Model
 
     protected $fillable = [
         'sender_id',
-        'message_id',
         'receiver_id',
     ];
 
     public  function sender()
     {
-        return $this->belongsTo(Admin::class,'sender');
+        return $this->belongsTo(Admin::class,'sender_id');
     }
     public  function receiver()
     {
         return $this->belongsTo(Admin::class,'receiver_id');
     }
-    public  function message()
+    public  function messages()
     {
-        return $this->belongsTo(Message::class,'message_id');
+        return $this->hasMany(Message::class);
     }
 
 

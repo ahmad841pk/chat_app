@@ -127,7 +127,7 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
                         <div class="d-flex align-items-center w-100">
                             <div class="sidebar-profile-toggle">
                                 <div class="avatar avatar-border">
-                                    <img src="../../../app-assets/images/portrait/small/avatar-s-11.jpg"
+                                    <img src="{{asset('backend/app-assets/images/portrait/small/avatar-s-11.jpg')}}"
                                          alt="user_avatar" height="42" width="42"/>
                                     <span class="avatar-status-online"></span>
                                 </div>
@@ -147,26 +147,21 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
                     <div id="users-list" class="chat-user-list-wrapper list-group">
                         <h4 class="chat-list-title">Chats</h4>
                         <ul class="chat-users-list chat-list media-list">
-                            @foreach($conversations as $message)
+                            @foreach($active_chat_users as $user)
                                 <li>
                                     <span class="avatar"><img
-                                            src="../../../app-assets/images/portrait/small/avatar-s-3.jpg" height="42"
+                                            src="{{asset('backend/app-assets/images/portrait/small/avatar-s-3.jpg')}}" height="42"
                                             width="42" alt="Generic placeholder image"/>
                                         <span class="avatar-status-online"></span>
                                     </span>
                                     <div class="chat-info flex-grow-1">
-                                        @if($message->sender->id == Auth::user()->id)
-                                            <h5 class="mb-0">{{$message->receiver->name}}</h5>
-                                        @elseif($message->receiver->id == Auth::user()->id)
-                                            <h5 class="mb-0">{{$message->sender->name}}</h5>
-                                        @endif
+                                            <h5 class="mb-0">{{$user->name}}</h5>
                                         <p class="card-text text-truncate">
-                                            Cake pie jelly jelly beans. Marzipan lemon drops halvah cake. Pudding cookie
-                                            lemon drops icing
+{{--                                            {{$conversation->message->message}}--}}
                                         </p>
                                     </div>
                                     <div class="chat-meta text-nowrap">
-                                        <small class="float-end mb-25 chat-time">{{$message->created_at}}</small>
+                                        <small class="float-end mb-25 chat-time">{{$user->created_at}}</small>
                                         <span class="badge bg-danger rounded-pill float-end">3</span>
                                     </div>
                                 </li>
@@ -234,7 +229,7 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
                                                  alt="avatar" height="36" width="36"/>
                                             <span class="avatar-status-busy"></span>
                                         </div>
-                                        <h6 class="mb-0">Ahmad</h6>
+                                        <h6 class="mb-0">Wasim</h6>
                                     </div>
                                     <div class="d-flex align-items-center">
                                         <i data-feather="phone-call"
@@ -390,8 +385,9 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
                                 <div class="input-group input-group-merge me-1 form-send-message">
                                     <span class="speech-to-text input-group-text"><i data-feather="mic"
                                                                                      class="cursor-pointer"></i></span>
-                                    <input type="text" class="form-control message" name="message"
+                                    <input type="text" class="form-control message"
                                            placeholder="Type your message or use speech to text"/>
+                                    <input class="message_value" type="text" hidden name="message">
                                     <span class="input-group-text">
                                             <label for="attach-doc" class="attachment-icon form-label mb-0">
                                                 <i data-feather="image" class="cursor-pointer text-secondary"></i>
@@ -500,8 +496,21 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
     <script>
         $(document).ready(function() {
             $("form").on("submit",function (e){
-                var dataString =  $(this).serialize();
-                console.log(dataString);
+               var message = $('.message_value').val();
+                $.ajax({
+                    url: '{{route('send.message')}}',
+                    type: 'POST',
+                    data: { _token: "{{csrf_token()}}",
+                        message : message
+                    },
+                    dataType: 'JSON',
+                    success: function(response) {
+                        console.log(response);
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
             });
         });
     </script>

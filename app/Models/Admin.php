@@ -47,6 +47,10 @@ class Admin extends Authenticatable
     {
         return $this->hasMany(Message::class);
     }
+    public function conversations()
+    {
+        return $this->hasMany(Conversation::class,'sender_id');
+    }
     public function contacts()
     {
         return $this->hasMany(Contact::class);

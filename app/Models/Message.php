@@ -11,12 +11,17 @@ class Message extends Model
 
     protected $fillable =[
         'creator_id',
+        'conversation_id',
         'message',
     ];
 
     public function creator()
     {
         return $this->belongsTo(Admin::class,'creator_id');
+    }
+    public function conversation()
+    {
+        return $this->belongsTo(Conversation::class,'conversation_id');
     }
     public function messageRecipient()
     {

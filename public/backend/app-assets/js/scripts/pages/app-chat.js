@@ -276,6 +276,7 @@ function enterChat(source) {
   if (/\S/.test(message)) {
     var html = '<div class="chat-content">' + '<p>' + message + '</p>' + '</div>';
     $('.chat:last-child .chat-body').append(html);
+    $('.message_value').val(message);
     $('.message').val('');
     $('.user-chats').scrollTop($('.user-chats > .chats').height());
   }
