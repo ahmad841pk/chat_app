@@ -391,6 +391,7 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
             </div>
         </div>
     </div>
+    <input id="current_user" type="text" hidden value="{{Auth::user()->id}}">
 @endsection
 
 @section('extra_script')
@@ -443,7 +444,8 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
                 },
                 dataType: 'JSON',
                 success: function (response) {
-                    $('#chat_with').text(response['second_user']);
+                    $('#chat_with').text(response['second_user']['name']);
+                    $('#chat_with_id').val(response['second_user']['id']);
                     if (response['conversation'] != null) {
                         conversation_id = response['conversation']['id'];
                         var chat = response['conversation']['messages'];
@@ -492,8 +494,20 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
 
         var channel = pusher.subscribe('chat');
         channel.bind('App\\Events\\MessageSent', function(data) {
-            alert(JSON.stringify(data));
-            // console.log('waseem');
+            var currentUser = $('#current_user').val()
+            if(data.user.id != currentUser) {
+                alert(JSON.stringify(data.user.name + " has messaged you"));
+                var html = '<div class="chat chat-left">' +
+                    '<div class="chat-body">' +
+                    '<div class="chat-content">' +
+                    '<p>' + data.message.message + '</p>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>';
+                $('.chats').append(html);
+                $('.user-chats').scrollTop($('.user-chats > .chats').height());
+            }
+
         });
     </script>
 

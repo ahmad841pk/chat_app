@@ -48,7 +48,7 @@ class ChatsController extends Controller
         return response()->json([
             'conversation' => $conversation,
             'current_user'=>Auth::user()->id,
-            'second_user' => $second_user->name
+            'second_user' => $second_user
         ]);
     }
 
