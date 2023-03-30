@@ -145,23 +145,33 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
 
                     <!-- Sidebar Users start -->
                     <div id="users-list" class="chat-user-list-wrapper list-group">
-                        <h4 class="chat-list-title">Chats</h4>
+                        @if($active_chat_users->isNotEmpty())
+                            <h4 class="chat-list-title">Chats</h4>
+                        @endif
                         <ul class="chat-users-list chat-list media-list">
                             @foreach($active_chat_users as $user)
-                                <li>
+                                <li onclick="showChat(event,{{$user->id}})">
                                     <span class="avatar"><img
-                                            src="{{asset('backend/app-assets/images/portrait/small/avatar-s-3.jpg')}}" height="42"
+                                            src="{{asset('backend/app-assets/images/portrait/small/avatar-s-3.jpg')}}"
+                                            height="42"
                                             width="42" alt="Generic placeholder image"/>
                                         <span class="avatar-status-online"></span>
                                     </span>
                                     <div class="chat-info flex-grow-1">
-                                            <h5 class="mb-0">{{$user->name}}</h5>
-                                        <p class="card-text text-truncate">
-{{--                                            {{$conversation->message->message}}--}}
-                                        </p>
+                                        <h5 class="mb-0">{{$user->name}}</h5>
+                                        @foreach($conversations as $conversation)
+                                            @if($conversation->created_by == Auth::user()->id && $conversation->chat_with == $user->id)
+                                                <p class="card-text text-truncate">{{$conversation->messages->last()->message}}</p>
+                                                @break
+                                            @elseif($conversation->created_by == $user->id && $conversation->chat_with ==Auth::user()->id)
+                                                <p class="card-text text-truncate">{{$conversation->messages->last()->message}}</p>
+                                                @break
+                                            @endif
+                                        @endforeach
+
                                     </div>
                                     <div class="chat-meta text-nowrap">
-                                        <small class="float-end mb-25 chat-time">{{$user->created_at}}</small>
+                                        <small class="float-end mb-25 chat-time">{{$conversation->messages->last()->created_at->diffForHumans()}}</small>
                                         <span class="badge bg-danger rounded-pill float-end">3</span>
                                     </div>
                                 </li>
@@ -173,19 +183,27 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
                         <h4 class="chat-list-title">Contacts</h4>
                         <ul class="chat-users-list contact-list media-list">
                             @foreach($users as $user)
-                                <li>
+                                @if($user->id != Auth::user()->id)
+                                    <li onclick="showChat(event,{{$user->id}})">
                                     <span class="avatar"><img
-                                            src="{{asset('backend/app-assets/images/portrait/small/avatar-s-7.jpg')}}" height="42"
+                                            src="{{asset('backend/app-assets/images/portrait/small/avatar-s-7.jpg')}}"
+                                            height="42"
                                             width="42" alt="Generic placeholder image"/>
                                     </span>
-                                    <div class="chat-info">
-                                        <h5 class="mb-0">{{$user->name}}</h5>
-                                        <p class="card-text text-truncate">
-                                            Tart dragée carrot cake chocolate bar. Chocolate cake jelly beans caramels
-                                            tootsie roll candy canes.
-                                        </p>
-                                    </div>
-                                </li>
+                                        <div class="chat-info">
+                                            <h5 class="mb-0">{{$user->name}}</h5>
+                                            @foreach($conversations as $conversation)
+                                                @if($conversation->created_by == Auth::user()->id && $conversation->chat_with == $user->id)
+                                                    <p class="card-text text-truncate">{{$conversation->messages->last()->message}}</p>
+                                                    @break
+                                                @elseif($conversation->created_by == $user->id && $conversation->chat_with ==Auth::user()->id)
+                                                    <p class="card-text text-truncate">{{$conversation->messages->last()->message}}</p>
+                                                    @break
+                                                @endif
+                                            @endforeach
+                                        </div>
+                                    </li>
+                                @endif
                             @endforeach
                             <li class="no-results">
                                 <h6 class="mb-0">No Contacts Found</h6>
@@ -225,11 +243,12 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
                                             <i data-feather="menu" class="font-medium-5"></i>
                                         </div>
                                         <div class="avatar avatar-border user-profile-toggle m-0 me-1">
-                                            <img src="{{asset('backend/app-assets/images/portrait/small/avatar-s-7.jpg')}}"
-                                                 alt="avatar" height="36" width="36"/>
+                                            <img
+                                                src="{{asset('backend/app-assets/images/portrait/small/avatar-s-7.jpg')}}"
+                                                alt="avatar" height="36" width="36"/>
                                             <span class="avatar-status-busy"></span>
                                         </div>
-                                        <h6 class="mb-0">Wasim</h6>
+                                        <h6 class="mb-0" id="chat_with"></h6>
                                     </div>
                                     <div class="d-flex align-items-center">
                                         <i data-feather="phone-call"
@@ -263,131 +282,21 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
                             <!-- User Chat messages -->
                             <div class="user-chats">
                                 <div class="chats">
-                                    <div class="chat">
-                                        <div class="chat-avatar">
-                                                <span class="avatar box-shadow-1 cursor-pointer">
-                                                    <img src="../../../app-assets/images/portrait/small/avatar-s-11.jpg"
-                                                         alt="avatar" height="36" width="36"/>
-                                                </span>
-                                        </div>
-                                        <div class="chat-body">
-                                            <div class="chat-content">
-                                                <p>How can we help? We're here for you! 😄</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="chat chat-left">
-                                        <div class="chat-avatar">
-                                                <span class="avatar box-shadow-1 cursor-pointer">
-                                                    <img src="../../../app-assets/images/portrait/small/avatar-s-7.jpg"
-                                                         alt="avatar" height="36" width="36"/>
-                                                </span>
-                                        </div>
-                                        <div class="chat-body">
-                                            <div class="chat-content">
-                                                <p>Hey John, I am looking for the best admin template.</p>
-                                                <p>Could you please help me to find it out? 🤔</p>
-                                            </div>
-                                            <div class="chat-content">
-                                                <p>It should be Bootstrap 4 compatible.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="divider">
-                                        <div class="divider-text">Yesterday</div>
-                                    </div>
-                                    <div class="chat">
-                                        <div class="chat-avatar">
-                                                <span class="avatar box-shadow-1 cursor-pointer">
-                                                    <img src="../../../app-assets/images/portrait/small/avatar-s-11.jpg"
-                                                         alt="avatar" height="36" width="36"/>
-                                                </span>
-                                        </div>
-                                        <div class="chat-body">
-                                            <div class="chat-content">
-                                                <p>Absolutely!</p>
-                                            </div>
-                                            <div class="chat-content">
-                                                <p>Vuexy admin is the responsive bootstrap 4 admin template.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="chat chat-left">
-                                        <div class="chat-avatar">
-                                                <span class="avatar box-shadow-1 cursor-pointer">
-                                                    <img src="../../../app-assets/images/portrait/small/avatar-s-7.jpg"
-                                                         alt="avatar" height="36" width="36"/>
-                                                </span>
-                                        </div>
-                                        <div class="chat-body">
-                                            <div class="chat-content">
-                                                <p>Looks clean and fresh UI. 😃</p>
-                                            </div>
-                                            <div class="chat-content">
-                                                <p>It's perfect for my next project.</p>
-                                            </div>
-                                            <div class="chat-content">
-                                                <p>How can I purchase it?</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="chat">
-                                        <div class="chat-avatar">
-                                                <span class="avatar box-shadow-1 cursor-pointer">
-                                                    <img src="../../../app-assets/images/portrait/small/avatar-s-11.jpg"
-                                                         alt="avatar" height="36" width="36"/>
-                                                </span>
-                                        </div>
-                                        <div class="chat-body">
-                                            <div class="chat-content">
-                                                <p>Thanks, from ThemeForest.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="chat chat-left">
-                                        <div class="chat-avatar">
-                                                <span class="avatar box-shadow-1 cursor-pointer">
-                                                    <img src="../../../app-assets/images/portrait/small/avatar-s-7.jpg"
-                                                         alt="avatar" height="36" width="36"/>
-                                                </span>
-                                        </div>
-                                        <div class="chat-body">
-                                            <div class="chat-content">
-                                                <p>I will purchase it for sure. 👍</p>
-                                            </div>
-                                            <div class="chat-content">
-                                                <p>Thanks.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="chat">
-                                        <div class="chat-avatar">
-                                                <span class="avatar box-shadow-1 cursor-pointer">
-                                                    <img src="../../../app-assets/images/portrait/small/avatar-s-11.jpg"
-                                                         alt="avatar" height="36" width="36"/>
-                                                </span>
-                                        </div>
-                                        <div class="chat-body">
-                                            <div class="chat-content">
-                                                <p>Great, Feel free to get in touch on</p>
-                                            </div>
-                                            <div class="chat-content">
-                                                <p>https://pixinvent.ticksy.com/</p>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                             <!-- User Chat messages -->
 
                             <!-- Submit Chat form -->
-                            <form id="chat_form" class="chat-app-form" action="javascript:void(0)" onsubmit="enterChat()";>
+                            <form id="chat_form" class="chat-app-form" action="javascript:void(0)"
+                                  onsubmit="enterChat()" ;>
                                 <div class="input-group input-group-merge me-1 form-send-message">
                                     <span class="speech-to-text input-group-text"><i data-feather="mic"
                                                                                      class="cursor-pointer"></i></span>
                                     <input type="text" class="form-control message"
                                            placeholder="Type your message or use speech to text"/>
                                     <input class="message_value" type="text" hidden name="message">
+                                    <input class="conversation_value" type="text" hidden name="conversation">
+                                    <input class="chat_with_value" type="text" hidden name="chat_with">
                                     <span class="input-group-text">
                                             <label for="attach-doc" class="attachment-icon form-label mb-0">
                                                 <i data-feather="image" class="cursor-pointer text-secondary"></i>
@@ -494,24 +403,98 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
     <script src="{{asset('backend/app-assets/js/scripts/pages/app-chat.js')}}"></script>
 
     <script>
-        $(document).ready(function() {
-            $("form").on("submit",function (e){
-               var message = $('.message_value').val();
+        $(document).ready(function () {
+            $("form").on("submit", function (e) {
+                e.preventDefault();
+                var message = $('.message_value').val();
+                var conversation = $('.conversation_value').val();
+                var chat_with = $('.chat_with_value').val();
                 $.ajax({
                     url: '{{route('send.message')}}',
                     type: 'POST',
-                    data: { _token: "{{csrf_token()}}",
-                        message : message
+                    data: {
+                        _token: "{{csrf_token()}}",
+                        message: message,
+                        conversation: conversation,
+                        chat_with: chat_with
                     },
                     dataType: 'JSON',
-                    success: function(response) {
+                    success: function (response) {
                         console.log(response);
                     },
-                    error: function(error) {
+                    error: function (error) {
                         console.log(error);
                     }
                 });
             });
         });
     </script>
+    <script>
+        function showChat(event, user_id) {
+            $('.chats').empty();
+            var conversation_id = null;
+            event.preventDefault();
+            $.ajax({
+                url: '{{route('fetch.message')}}',
+                type: 'POST',
+                data: {
+                    _token: "{{csrf_token()}}",
+                    user_id: user_id
+                },
+                dataType: 'JSON',
+                success: function (response) {
+                    $('#chat_with').text(response['second_user']);
+                    if (response['conversation'] != null) {
+                        conversation_id = response['conversation']['id'];
+                        var chat = response['conversation']['messages'];
+                        for (let i = 0; i < chat.length; i++) {
+                            if (chat[i].creator_id == response['current_user']) {
+                                var html = '<div class="chat">' +
+                                    '<div class="chat-body">' +
+                                    '<div class="chat-content">' +
+                                    '<p>' + chat[i].message + '</p>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>';
+                                $('.chats').append(html);
+                            } else {
+                                var html = '<div class="chat chat-left">' +
+                                    '<div class="chat-body">' +
+                                    '<div class="chat-content">' +
+                                    '<p>' + chat[i].message + '</p>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>';
+                                $('.chats').append(html);
+                            }
+                        }
+                    }
+                    $('.conversation_value').val(conversation_id);
+                    $('.chat_with_value').val(user_id);
+
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        }
+    </script>
+
+    <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+    <script>
+
+        // Enable pusher logging - don't include this in production
+        Pusher.logToConsole = true;
+
+        var pusher = new Pusher('b89edac162663d4277e1', {
+            cluster: 'ap2'
+        });
+
+        var channel = pusher.subscribe('chat');
+        channel.bind('App\\Events\\MessageSent', function(data) {
+            alert(JSON.stringify(data));
+            // console.log('waseem');
+        });
+    </script>
+
 @endsection

@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('conversations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('sender_id')->nullable();
-            $table->foreignId('receiver_id')->nullable();
+            $table->foreignId('created_by')->nullable();
+            $table->foreignId('chat_with')->nullable();
             $table->timestamps();
         });
     }

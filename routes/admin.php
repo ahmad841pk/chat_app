@@ -20,7 +20,7 @@ Route::middleware('auth:admin')->group(function () {
     Route::get('logout',[LoginController::class,'logout'])->name('admin.logout');
 
     Route::get('/chat', [ChatsController::class,'index'])->name('admin.chat');
-    Route::get('/messages', [ChatsController::class, 'fetchMessages']);
+    Route::post('/get-messages', [ChatsController::class, 'fetchMessages'])->name('fetch.message');
     Route::post('/messages', [ChatsController::class, 'sendMessage'])->name('send.message');
 
 

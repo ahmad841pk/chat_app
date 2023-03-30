@@ -10,17 +10,17 @@ class Conversation extends Model
     use HasFactory;
 
     protected $fillable = [
-        'sender_id',
-        'receiver_id',
+        'created_by',
+        'chat_with',
     ];
 
-    public  function sender()
+    public  function createdBy()
     {
-        return $this->belongsTo(Admin::class,'sender_id');
+        return $this->belongsTo(Admin::class,'created_by');
     }
-    public  function receiver()
+    public  function chatWith()
     {
-        return $this->belongsTo(Admin::class,'receiver_id');
+        return $this->belongsTo(Admin::class,'chat_with');
     }
     public  function messages()
     {

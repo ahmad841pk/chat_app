@@ -16,54 +16,60 @@ class ChatsController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $messages = Message::with('creator', 'messageRecipient', 'replies')->where('creator_id', Auth::user()->id)->latest()->get();
-        $users= Admin::all();
-        $conversations = Conversation::where('sender_id',Auth::user()->id)->orWhere('receiver_id',Auth::user()->id)->get();
+        $users = Admin::all();
+        $conversations = Conversation::where('created_by', Auth::user()->id)->orWhere('chat_with', Auth::user()->id)->get();
         $ids = array();
-     foreach ($conversations as $conversation){
-         if($conversation->sender->id == $user->id)
-         {
-             if(!in_array($conversation->receiver->id,$ids)){
-                 array_push($ids,$conversation->receiver->id);
-             }
-         }
-         else if($conversation->receiver->id == $user->id)
-         {
-             if(!in_array($conversation->sender->id,$ids)){
-                 array_push($ids,$conversation->sender->id);
-             }
-         }
-     }
-    return $active_chat_users = Admin::with('conversations',function ($query){
-         $query->where('receiver_id',Auth::user()->id)->orWhere('sender_id',Auth::user()->id)->latest()->first();
-     })->whereIn('id',$ids)->toSql();
+        foreach ($conversations as $conversation) {
+            if ($conversation->createdBy->id == $user->id) {
+                if (!in_array($conversation->chatWith->id, $ids)) {
+                    array_push($ids, $conversation->chatWith->id);
+                }
+            } else if ($conversation->chatWith->id == $user->id) {
+                if (!in_array($conversation->createdBy->id, $ids)) {
+                    array_push($ids, $conversation->createdBy->id);
+                }
+            }
+        }
+        $active_chat_users = Admin::whereIn('id', $ids)->get();
 
-        return view('admin.chat.index', compact('messages','users','conversations','active_chat_users'));
+
+        return view('admin.chat.index', compact( 'users', 'conversations', 'active_chat_users'));
     }
 
-    public function fetchMessages()
+    public function fetchMessages(Request $request)
     {
-        return Message::with('creator', 'recipient', 'replies')->where('creator_id', Auth::user()->id)->latest()->get();
+        $user_id = $request->user_id;
+        $second_user = Admin::find($user_id);
+        $conversation = Conversation::with('messages')->where('created_by', Auth::user()->id, function ($query) use ($user_id) {
+            return $query->where('chat_with', $user_id);
+        })->orWhere('created_by', $user_id, function ($query) {
+            return $query->where('chat_with', Auth::user()->id);
+        })->first();
+        return response()->json([
+            'conversation' => $conversation,
+            'current_user'=>Auth::user()->id,
+            'second_user' => $second_user->name
+        ]);
     }
 
     public function sendMessage(Request $request)
     {
-        $user = Auth::user();
+        if ($request->input('conversation') == null) {
+            $conversation = Conversation::create([
+                'created_by' => Auth::user()->id,
+                'chat_with' => $request->input('chat_with'),
+            ]);
+            $conversation_id = $conversation->id;
+        } else {
+            $conversation_id = $request->input('conversation');
+        }
         $message = Message::create([
             'message' => $request->input('message'),
-            'creator_id' => $user->id,
+            'conversation_id' => $conversation_id,
+            'creator_id' => Auth::user()->id,
         ]);
-        $recipient = MessageRecipient::create([
-            'recipient_id'=> 2,
-            'message_id'=>$message->id,
-        ]);
-        Conversation::create([
-            'sender_id'=> $user->id,
-            'message_id'=>$message->id,
-            'receiver_id'=> 2
-
-        ]);
-//        event(new MessageSent($user, $message));
-        return response()->json(['message_id'=>$message->id]);
+        $user = Auth::user();
+        event(new MessageSent($user,$message));
+        return response()->json(['conversation_id' => $conversation_id]);
     }
 }
