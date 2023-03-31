@@ -476,19 +476,18 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
                     }
                     $('.conversation_value').val(conversation_id);
                     $('.chat_with_value').val(user_id);
-
                 },
                 error: function (error) {
                     console.log(error);
                 }
-        });
+            });
         }
     </script>
 
     <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
     <script src="{{asset('backend/js/push.min.js')}}"></script>
     <script>
-      var iconPath = $('#icon').val();
+        var iconPath = $('#icon').val();
         // Enable pusher logging - don't include this in production
         Pusher.logToConsole = true;
 
@@ -498,8 +497,10 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
 
         var channel = pusher.subscribe('chat');
         channel.bind('App\\Events\\MessageSent', function(data) {
+            console.clear();
             var currentUser = $('#current_user').val()
-            var chatWith = $('.chat_with_value').val()
+            var conversationId = $('.conversation_value').val();
+            var chatWith = $('.chat_with_value').val();
             if(data.user.id != currentUser) {
                 // alert(JSON.stringify(data.user.name + " has messaged you"));
                 Push.create("New SMS!", {
@@ -515,8 +516,15 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
                     '</div>' +
                     '</div>' +
                     '</div>';
-                $('.chats').append(html);
-                $('.user-chats').scrollTop($('.user-chats > .chats').height());
+                if(conversationId == data.conversation_id ) {
+                    $('.chats').append(html);
+                    $('.user-chats').scrollTop($('.user-chats > .chats').height());
+                } else {
+                    if (chatWith == data.user.id) {
+                        $('.chats').append(html);
+                        $('.user-chats').scrollTop($('.user-chats > .chats').height());
+                    }
+                }
             }
 
         });
