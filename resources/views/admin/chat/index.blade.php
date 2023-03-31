@@ -481,7 +481,7 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
                 error: function (error) {
                     console.log(error);
                 }
-            });
+        });
         }
     </script>
 
@@ -507,7 +507,6 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
                     timeout: 5000,
                     icon: iconPath
                 });
-            }
 
                 var html = '<div class="chat chat-left">' +
                     '<div class="chat-body">' +
@@ -516,10 +515,9 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
                     '</div>' +
                     '</div>' +
                     '</div>';
-                if(chatWith == currentUser ) {
-                    $('.chats').append(html);
-                    $('.user-chats').scrollTop($('.user-chats > .chats').height());
-                }
+                $('.chats').append(html);
+                $('.user-chats').scrollTop($('.user-chats > .chats').height());
+            }
 
         });
     </script>

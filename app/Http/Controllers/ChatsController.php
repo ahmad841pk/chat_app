@@ -77,7 +77,7 @@ class ChatsController extends Controller
         ]);
         $user = Auth::user();
         $chat_with_user = Admin::find($request->input('chat_with'));
-        event(new MessageSent($user,$message));
+        event(new MessageSent($user,$message,$chat_with_user));
         return response()->json(['conversation_id' => $conversation_id]);
     }
 }

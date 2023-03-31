@@ -26,7 +26,7 @@ return new class extends Migration
             array(
                 0=>
                     array(
-                        'email' => 'admin1@chat.com',
+                        'email' => 'admin1@whizzbridge.com',
                         'name' => 'Ahmad',
                         'password' => \Illuminate\Support\Facades\Hash::make('12345678'),
                         'image' => 'uploads/profile/sOrFQwVoes6f7319699f10d40f242e9d33fd91bf4d.png',
