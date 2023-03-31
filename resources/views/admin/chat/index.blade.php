@@ -392,6 +392,7 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
         </div>
     </div>
     <input id="current_user" type="text" hidden value="{{Auth::user()->id}}">
+    <input id="icon" type="text" hidden value="{{asset('backend/app-assets/images/icons/technology/laravel.png')}}">
 @endsection
 
 @section('extra_script')
@@ -433,6 +434,7 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
     <script>
         function showChat(event, user_id) {
             $('.chats').empty();
+            // $('.chats').find('div').remove();
             var conversation_id = null;
             event.preventDefault();
             $.ajax({
@@ -444,6 +446,7 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
                 },
                 dataType: 'JSON',
                 success: function (response) {
+                    console.log(response);
                     $('#chat_with').text(response['second_user']['name']);
                     $('#chat_with_id').val(response['second_user']['id']);
                     if (response['conversation'] != null) {
@@ -483,8 +486,9 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
     </script>
 
     <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+    <script src="{{asset('backend/js/push.min.js')}}"></script>
     <script>
-
+      var iconPath = $('#icon').val();
         // Enable pusher logging - don't include this in production
         Pusher.logToConsole = true;
 
@@ -495,8 +499,16 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
         var channel = pusher.subscribe('chat');
         channel.bind('App\\Events\\MessageSent', function(data) {
             var currentUser = $('#current_user').val()
+            var chatWith = $('.chat_with_value').val()
             if(data.user.id != currentUser) {
-                alert(JSON.stringify(data.user.name + " has messaged you"));
+                // alert(JSON.stringify(data.user.name + " has messaged you"));
+                Push.create("New SMS!", {
+                    body: data.user.name + " has messaged you",
+                    timeout: 5000,
+                    icon: iconPath
+                });
+            }
+
                 var html = '<div class="chat chat-left">' +
                     '<div class="chat-body">' +
                     '<div class="chat-content">' +
@@ -504,9 +516,10 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
                     '</div>' +
                     '</div>' +
                     '</div>';
-                $('.chats').append(html);
-                $('.user-chats').scrollTop($('.user-chats > .chats').height());
-            }
+                if(chatWith == currentUser ) {
+                    $('.chats').append(html);
+                    $('.user-chats').scrollTop($('.user-chats > .chats').height());
+                }
 
         });
     </script>

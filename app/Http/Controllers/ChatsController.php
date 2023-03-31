@@ -7,6 +7,7 @@ use App\Models\Admin;
 use App\Models\Conversation;
 use App\Models\Message;
 use App\Models\MessageRecipient;
+use App\Notifications\Chat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -40,11 +41,17 @@ class ChatsController extends Controller
     {
         $user_id = $request->user_id;
         $second_user = Admin::find($user_id);
-        $conversation = Conversation::with('messages')->where('created_by', Auth::user()->id, function ($query) use ($user_id) {
-            return $query->where('chat_with', $user_id);
-        })->orWhere('created_by', $user_id, function ($query) {
-            return $query->where('chat_with', Auth::user()->id);
-        })->first();
+
+        $conversation = Conversation::with('messages')
+            ->where(function ($query) use ($user_id) {
+                $query->where('created_by', Auth::user()->id)
+                    ->where('chat_with', $user_id);
+            })
+            ->orWhere(function ($query) use ($user_id) {
+                $query->where('created_by', $user_id)
+                    ->where('chat_with', Auth::user()->id);
+            })
+            ->first();
         return response()->json([
             'conversation' => $conversation,
             'current_user'=>Auth::user()->id,
@@ -69,6 +76,7 @@ class ChatsController extends Controller
             'creator_id' => Auth::user()->id,
         ]);
         $user = Auth::user();
+        $chat_with_user = Admin::find($request->input('chat_with'));
         event(new MessageSent($user,$message));
         return response()->json(['conversation_id' => $conversation_id]);
     }
