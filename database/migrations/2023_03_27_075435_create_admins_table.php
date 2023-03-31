@@ -25,26 +25,26 @@ return new class extends Migration
         DB::table('admins')->insert(
             array(
                 0=>
-                array(
-                'email' => 'admin1@chat.com',
-                'name' => 'Ahmad',
-                'password' => \Illuminate\Support\Facades\Hash::make('12345678'),
-                'image' => 'uploads/profile/sOrFQwVoes6f7319699f10d40f242e9d33fd91bf4d.png',
-            ),
-        1=>
-                array(
-                'email' => 'admin2@whizzbridge.com',
-                'name' => 'wasim',
-                'password' => \Illuminate\Support\Facades\Hash::make('12345678'),
-                'image' => 'uploads/profile/sOrFQwVoes6f7319699f10d40f242e9d33fd91bf4d.png',
-            ),
-        2=>
-                array(
-                'email' => 'admin3@whizzbridge.com',
-                'name' => 'hassan',
-                'password' => \Illuminate\Support\Facades\Hash::make('12345678'),
-                'image' => 'uploads/profile/sOrFQwVoes6f7319699f10d40f242e9d33fd91bf4d.png',
-            ),
+                    array(
+                        'email' => 'admin1@chat.com',
+                        'name' => 'Ahmad',
+                        'password' => \Illuminate\Support\Facades\Hash::make('12345678'),
+                        'image' => 'uploads/profile/sOrFQwVoes6f7319699f10d40f242e9d33fd91bf4d.png',
+                    ),
+                1=>
+                    array(
+                        'email' => 'admin2@whizzbridge.com',
+                        'name' => 'wasim',
+                        'password' => \Illuminate\Support\Facades\Hash::make('12345678'),
+                        'image' => 'uploads/profile/sOrFQwVoes6f7319699f10d40f242e9d33fd91bf4d.png',
+                    ),
+                2=>
+                    array(
+                        'email' => 'admin3@whizzbridge.com',
+                        'name' => 'hassan',
+                        'password' => \Illuminate\Support\Facades\Hash::make('12345678'),
+                        'image' => 'uploads/profile/sOrFQwVoes6f7319699f10d40f242e9d33fd91bf4d.png',
+                    ),
                 3=>
                     array(
                         'email' => 'admin4@whizzbridge.com',
@@ -52,7 +52,7 @@ return new class extends Migration
                         'password' => \Illuminate\Support\Facades\Hash::make('12345678'),
                         'image' => 'uploads/profile/sOrFQwVoes6f7319699f10d40f242e9d33fd91bf4d.png',
                     )
-        ));
+            ));
     }
 
     /**
