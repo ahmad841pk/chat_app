@@ -56,9 +56,9 @@ class Admin extends Authenticatable
         return $this->hasMany(Contact::class);
     }
 
-    public function groups()
+    public function chatGroups()
     {
-        return $this->belongsToMany(Group::class, 'group_members', 'member_id', 'group_id');
+        return $this->belongsToMany(ChatGroup::class, 'group_members', 'member_id', 'group_id');
 
     }
 }

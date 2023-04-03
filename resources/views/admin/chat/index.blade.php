@@ -180,6 +180,41 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
                                 <h6 class="mb-0">No Chats Found</h6>
                             </li>
                         </ul>
+
+                            <h4 class="chat-list-title">Groups</h4>
+                            <ul class="chat-users-list chat-list media-list">
+                                @foreach($groups as $group)
+                                    <li onclick="showGroupChat(event,{{$group->id}})">
+                                    <span class="avatar"><img
+                                            src="{{asset('backend/app-assets/images/portrait/small/avatar-s-3.jpg')}}"
+                                            height="42"
+                                            width="42" alt="Generic placeholder image"/>
+                                        <span class="avatar-status-online"></span>
+                                    </span>
+                                        <div class="chat-info flex-grow-1">
+                                            <h5 class="mb-0">{{$group->name}}</h5>
+{{--                                            @foreach($conversations as $conversation)--}}
+{{--                                                @if($conversation->created_by == Auth::user()->id && $conversation->chat_with == $user->id)--}}
+{{--                                                    <p class="card-text text-truncate">{{$conversation->messages->last()->message}}</p>--}}
+{{--                                                    @break--}}
+{{--                                                @elseif($conversation->created_by == $user->id && $conversation->chat_with ==Auth::user()->id)--}}
+{{--                                                    <p class="card-text text-truncate">{{$conversation->messages->last()->message}}</p>--}}
+{{--                                                    @break--}}
+{{--                                                @endif--}}
+{{--                                            @endforeach--}}
+
+                                        </div>
+                                        <div class="chat-meta text-nowrap">
+                                            <small class="float-end mb-25 chat-time"></small>
+                                            <span class="badge bg-danger rounded-pill float-end">3</span>
+                                        </div>
+                                    </li>
+                                @endforeach
+                                <li class="no-results">
+                                    <h6 class="mb-0">No Groups Found</h6>
+                                </li>
+                            </ul>
+
                         <h4 class="chat-list-title">Contacts</h4>
                         <ul class="chat-users-list contact-list media-list">
                             @foreach($users as $user)
@@ -322,7 +357,7 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
                             <!-- User Profile image with name -->
                             <div class="header-profile-sidebar">
                                 <div class="avatar box-shadow-1 avatar-border avatar-xl">
-                                    <img src="../../../app-assets/images/portrait/small/avatar-s-7.jpg"
+                                    <img src="{{asset('backend/app-assets/images/portrait/small/avatar-s-7.jpg')}}"
                                          alt="user_avatar" height="70" width="70"/>
                                     <span class="avatar-status-busy avatar-status-lg"></span>
                                 </div>
@@ -484,6 +519,56 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
         }
     </script>
 
+    <script>
+        function showGroupChat(event, group_id) {
+            $('.chats').empty();
+            var conversation_id = null;
+            event.preventDefault();
+            $.ajax({
+                url: '{{route('fetch.group.message')}}',
+                type: 'POST',
+                data: {
+                    _token: "{{csrf_token()}}",
+                    group_id: group_id
+                },
+                dataType: 'JSON',
+                success: function (response) {
+                    console.log("gsdjfh = "+ response);
+                    $('#chat_with').text(response['group']['name']);
+                    if (response['group']['conversation'] != null) {
+                        conversation_id = response['group']['conversation']['id'];
+                        var chat = response['group']['conversation']['messages'];
+                        for (let i = 0; i < chat.length; i++) {
+                            if (chat[i].creator_id == response['current_user']) {
+                                var html = '<div class="chat">' +
+                                    '<div class="chat-body">' +
+                                    '<div class="chat-content">' +
+                                    '<p>' + chat[i].message + '</p>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>';
+                                $('.chats').append(html);
+                            } else {
+                                var html = '<div class="chat chat-left">' +
+                                    '<div class="chat-body">' +
+                                    '<div class="chat-content">' +
+                                    '<p>' + chat[i].message + '</p>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>';
+                                $('.chats').append(html);
+                            }
+                        }
+                    }
+                    $('.conversation_value').val(conversation_id);
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        }
+    </script>
+
     <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
     <script src="{{asset('backend/js/push.min.js')}}"></script>
     <script>
@@ -497,7 +582,7 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
 
         var channel = pusher.subscribe('chat');
         channel.bind('App\\Events\\MessageSent', function(data) {
-            console.clear();
+            // console.clear();
             var currentUser = $('#current_user').val()
             var conversationId = $('.conversation_value').val();
             var chatWith = $('.chat_with_value').val();

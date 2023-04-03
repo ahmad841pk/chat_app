@@ -12,7 +12,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('groups', function (Blueprint $table) {
+        Schema::create('chat_groups', function (Blueprint $table) {
             $table->id();
             $table->foreignId('created_by')->nullable();
             $table->foreignId('conversation_id')->nullable();
@@ -20,7 +20,7 @@ return new class extends Migration
             $table->timestamps();
 
         });
-        DB::table('groups')->insert(
+        DB::table('chat_groups')->insert(
             array(
                 0=>
                     array(

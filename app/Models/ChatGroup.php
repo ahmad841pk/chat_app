@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Group extends Model
+class ChatGroup extends Model
 {
     use HasFactory;
     protected $fillable = [
@@ -17,6 +17,11 @@ class Group extends Model
     public function members()
     {
         return $this->belongsToMany(Admin::class, 'group_members', 'group_id', 'member_id');
+
+    }
+    public function conversation()
+    {
+        return $this->belongsTo(Conversation::class, 'conversation_id');
 
     }
 }

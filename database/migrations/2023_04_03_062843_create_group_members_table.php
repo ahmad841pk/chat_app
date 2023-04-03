@@ -32,6 +32,11 @@ return new class extends Migration
                         'member_id' => '2',
                         'group_id' => 1,
                     ),
+                2=>
+                    array(
+                        'member_id' => '3',
+                        'group_id' => 1,
+                    ),
             ));
     }
 

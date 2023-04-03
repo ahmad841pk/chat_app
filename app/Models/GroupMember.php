@@ -15,7 +15,7 @@ class GroupMember extends Model
     ];
 
     public  function group(){
-        return $this->belongsTo(Group::class,'group_id');
+        return $this->belongsTo(ChatGroup::class,'group_id');
     }
     public  function member(){
         return $this->belongsTo(Admin::class,'member_id');

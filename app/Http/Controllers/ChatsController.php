@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Events\MessageSent;
 use App\Models\Admin;
 use App\Models\Conversation;
+use App\Models\ChatGroup;
+use App\Models\ChatGroupMember;
 use App\Models\Message;
 use App\Models\MessageRecipient;
 use App\Notifications\Chat;
@@ -18,7 +20,10 @@ class ChatsController extends Controller
     {
         $user = Auth::user();
         $users = Admin::all();
-        $conversations = Conversation::where('created_by', Auth::user()->id)->orWhere('chat_with', Auth::user()->id)->get();
+        $groups = ChatGroup::whereHas('members', function ($query) {
+            $query->where('admins.id', '=', 1);
+        })->get();
+        $conversations = Conversation::where('created_by', Auth::user()->id)->where('is_group',0)->orWhere('chat_with', Auth::user()->id)->get();
         $ids = array();
         foreach ($conversations as $conversation) {
             if ($conversation->createdBy->id == $user->id) {
@@ -34,7 +39,7 @@ class ChatsController extends Controller
         $active_chat_users = Admin::whereIn('id', $ids)->get();
 
 
-        return view('admin.chat.index', compact( 'users', 'conversations', 'active_chat_users'));
+        return view('admin.chat.index', compact( 'users', 'conversations', 'active_chat_users','groups'));
     }
 
     public function fetchMessages(Request $request)
@@ -79,4 +84,21 @@ class ChatsController extends Controller
         event(new MessageSent($user,$message,$conversation_id));
         return response()->json(['conversation_id' => $conversation_id]);
     }
+
+    public function fetchGroupMessages(Request $request)
+    {
+        $group_id = $request->group_id;
+        $group = ChatGroup::with(['conversation' => function($query) {
+            $query->select('id')
+                ->with(['messages' => function($query) {
+                    $query->select('id', 'conversation_id', 'message');
+                }]);
+        }])->where('id',$group_id)->first();
+        return $group;
+        return response()->json([
+            'group' => $group,
+            'current_user'=>Auth::user()->id,
+        ]);
+    }
+
 }

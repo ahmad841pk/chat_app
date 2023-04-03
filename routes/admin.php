@@ -22,6 +22,7 @@ Route::middleware('auth:admin')->group(function () {
     Route::get('/chat', [ChatsController::class,'index'])->name('admin.chat');
     Route::post('/get-messages', [ChatsController::class, 'fetchMessages'])->name('fetch.message');
     Route::post('/messages', [ChatsController::class, 'sendMessage'])->name('send.message');
+    Route::post('/group-messages', [ChatsController::class, 'fetchGroupMessages'])->name('fetch.group.message');
 
 
 
