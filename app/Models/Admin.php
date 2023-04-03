@@ -55,4 +55,10 @@ class Admin extends Authenticatable
     {
         return $this->hasMany(Contact::class);
     }
+
+    public function groups()
+    {
+        return $this->belongsToMany(Group::class, 'group_members', 'member_id', 'group_id');
+
+    }
 }

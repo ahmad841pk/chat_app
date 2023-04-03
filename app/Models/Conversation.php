@@ -12,6 +12,7 @@ class Conversation extends Model
     protected $fillable = [
         'created_by',
         'chat_with',
+        'is_group',
     ];
 
     public  function createdBy()
