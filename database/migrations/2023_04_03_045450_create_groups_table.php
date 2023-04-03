@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -13,11 +14,21 @@ return new class extends Migration
     {
         Schema::create('groups', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('creator')->nullable();
+            $table->foreignId('created_by')->nullable();
             $table->foreignId('conversation_id')->nullable();
             $table->string('name')->nullable();
             $table->timestamps();
+
         });
+        DB::table('groups')->insert(
+            array(
+                0=>
+                    array(
+                        'created_by' => '1',
+                        'conversation_id' => 1,
+                        'name' => 'laravel',
+                    ),
+            ));
     }
 
     /**

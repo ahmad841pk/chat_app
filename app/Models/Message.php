@@ -23,12 +23,4 @@ class Message extends Model
     {
         return $this->belongsTo(Conversation::class,'conversation_id');
     }
-    public function messageRecipient()
-    {
-        return $this->hasOne(MessageRecipient::class);
-    }
-    public function replies()
-    {
-        return $this->hasMany(Reply::class);
-    }
 }
