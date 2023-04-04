@@ -104,7 +104,9 @@ class ChatsController extends Controller
             'creator_id' => Auth::user()->id,
         ]);
         $user = Auth::user();
-        event(new MessageSent($user,$message,$conversation_id));
+        $receiver =Admin::findOrFail($request->input('chat_with'));
+
+        event(new MessageSent($user,$message,$conversation_id,$receiver));
         return response()->json(['conversation_id' => $conversation_id]);
     }
 

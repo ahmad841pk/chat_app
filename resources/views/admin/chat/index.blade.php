@@ -158,7 +158,7 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
                                         <span class="avatar-status-online"></span>
                                     </span>
                                     <div class="chat-info flex-grow-1">
-                                        <h5 class="mb-0">{{$user->name}}</h5>
+                                        <h5 class="mb-0 names">{{$user->name}}</h5>
                                         @foreach($conversations as $conversation)
                                             @if($conversation->created_by == Auth::user()->id && $conversation->chat_with == $user->id)
                                                 <p class="card-text text-truncate">{{$conversation->messages->last()->message}}</p>
@@ -171,8 +171,9 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
 
                                     </div>
                                     <div class="chat-meta text-nowrap">
-                                        <small class="float-end mb-25 chat-time">{{$conversation->messages->last()->created_at->diffForHumans()}}</small>
-                                        <span class="badge bg-danger rounded-pill float-end">3</span>
+                                        <small
+                                            class="float-end mb-25 chat-time">{{$conversation->messages->last()->created_at->diffForHumans()}}</small>
+                                        <span class="badge bg-danger rounded-pill float-end"></span>
                                     </div>
                                 </li>
                             @endforeach
@@ -206,10 +207,6 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
                                         @endforeach
 
                                     </div>
-                                    <div class="chat-meta text-nowrap">
-                                        <small class="float-end mb-25 chat-time"></small>
-                                        <span class="badge bg-danger rounded-pill float-end">3</span>
-                                    </div>
                                 </li>
                             @endforeach
                             <li class="no-results">
@@ -228,7 +225,7 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
                                             width="42" alt="Generic placeholder image"/>
                                     </span>
                                         <div class="chat-info">
-                                            <h5 class="mb-0">{{$user->name}}</h5>
+                                            <h5 class="mb-0 names">{{$user->name}}</h5>
                                             @foreach($conversations as $conversation)
                                                 @if($conversation->created_by == Auth::user()->id && $conversation->chat_with == $user->id)
                                                     <p class="card-text text-truncate">{{$conversation->messages->last()->message}}</p>
@@ -238,6 +235,10 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
                                                     @break
                                                 @endif
                                             @endforeach
+                                        </div>
+                                        <div class="chat-meta text-nowrap">
+                                            <small class="float-end mb-25 chat-time"></small>
+                                            <span class="badge bg-danger rounded-pill float-end"></span>
                                         </div>
                                     </li>
                                 @endif
@@ -498,7 +499,7 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
                                 var html = '<div class="chat chat-left">' +
                                     '<div class="chat-body">' +
                                     '<div class="chat-content">' +
-                                    '<p style="font-size: 12px; color:green; text-decoration: underline;">'+chat[i].creator.name+'</p>'+
+                                    '<p style="font-size: 12px; color:green; text-decoration: underline;">' + chat[i].creator.name + '</p>' +
                                     '<p>' + chat[i].message + '</p>' +
                                     '</div>' +
                                     '</div>' +
@@ -551,7 +552,7 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
                                 var html = '<div class="chat chat-left">' +
                                     '<div class="chat-body">' +
                                     '<div class="chat-content">' +
-                                    '<p style="font-size: 12px; color:green; text-decoration: underline;">'+chat[i].creator.name+'</p>'+
+                                    '<p style="font-size: 12px; color:green; text-decoration: underline;">' + chat[i].creator.name + '</p>' +
                                     '<p>' + chat[i].message + '</p>' +
                                     '</div>' +
                                     '</div>' +
@@ -572,6 +573,7 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
     <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
     <script src="{{asset('backend/js/push.min.js')}}"></script>
     <script>
+        var count = 0;
         var iconPath = $('#icon').val();
         // Enable pusher logging - don't include this in production
         Pusher.logToConsole = true;
@@ -581,11 +583,12 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
         });
 
         var channel = pusher.subscribe('chat');
-        channel.bind('App\\Events\\MessageSent', function(data) {
-            // console.clear();
+        channel.bind('App\\Events\\MessageSent', function (data) {
+            count++;
+            console.clear();
             var currentUser = $('#current_user').val()
             var conversationId = $('.conversation_value').val();
-            if(data.user.id != currentUser) {
+            if (data.receiver.id == currentUser) {
                 Push.create("New SMS!", {
                     body: data.user.name + " has messaged you",
                     timeout: 5000,
@@ -595,14 +598,25 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
                 var html = '<div class="chat chat-left">' +
                     '<div class="chat-body">' +
                     '<div class="chat-content">' +
-                    '<p style="font-size: 12px; color:green; text-decoration: underline;">'+data.user.name+'</p>'+
+                    '<p style="font-size: 12px; color:green; text-decoration: underline;">' + data.user.name + '</p>' +
                     '<p>' + data.message.message + '</p>' +
                     '</div>' +
                     '</div>' +
                     '</div>';
-                if(conversationId == data.conversation_id ) {
+                if (conversationId == data.conversation_id) {
                     $('.chats').append(html);
                     $('.user-chats').scrollTop($('.user-chats > .chats').height());
+                } else {
+                    $('.names').each(function () {
+                        var name = $(this).text();
+
+                        if (name == data.user.name) {
+                            var li = $(this).closest('li');
+                            var span = li.find('span.badge');
+                            span.text(count);
+                        }
+                    });
+
                 }
             }
 
