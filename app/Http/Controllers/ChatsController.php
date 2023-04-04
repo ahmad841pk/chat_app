@@ -23,6 +23,7 @@ class ChatsController extends Controller
         $groups = ChatGroup::whereHas('members', function ($query) {
             $query->where('admins.id', '=', 1);
         })->get();
+
         $conversations = Conversation::where('created_by', Auth::user()->id)->where('is_group',0)->orWhere('chat_with', Auth::user()->id)->get();
         $ids = array();
         foreach ($conversations as $conversation) {
@@ -91,10 +92,12 @@ class ChatsController extends Controller
         $group = ChatGroup::with(['conversation' => function($query) {
             $query->select('id')
                 ->with(['messages' => function($query) {
-                    $query->select('id', 'conversation_id', 'message');
+                    $query->select('id', 'conversation_id','creator_id', 'message')
+                        ->with(['creator' => function($query) {
+                            $query->select('id','name');
+                        }]);
                 }]);
-        }])->where('id',$group_id)->first();
-        return $group;
+        }])->findOrFail($group_id);
         return response()->json([
             'group' => $group,
             'current_user'=>Auth::user()->id,

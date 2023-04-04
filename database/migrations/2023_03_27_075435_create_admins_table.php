@@ -41,14 +41,14 @@ return new class extends Migration
                 2=>
                     array(
                         'email' => 'admin3@whizzbridge.com',
-                        'name' => 'hassan',
+                        'name' => 'raza',
                         'password' => \Illuminate\Support\Facades\Hash::make('12345678'),
                         'image' => 'uploads/profile/sOrFQwVoes6f7319699f10d40f242e9d33fd91bf4d.png',
                     ),
                 3=>
                     array(
                         'email' => 'admin4@whizzbridge.com',
-                        'name' => 'raza',
+                        'name' => 'hassan',
                         'password' => \Illuminate\Support\Facades\Hash::make('12345678'),
                         'image' => 'uploads/profile/sOrFQwVoes6f7319699f10d40f242e9d33fd91bf4d.png',
                     )
