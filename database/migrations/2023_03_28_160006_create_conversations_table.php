@@ -27,6 +27,11 @@ return new class extends Migration
                         'created_by' => '1',
                         'is_group' => 1,
                     ),
+                1=>
+                    array(
+                        'created_by' => '1',
+                        'is_group' => 1,
+                    ),
             ));
 
 

@@ -20,8 +20,8 @@ class ChatsController extends Controller
     {
         $user = Auth::user();
         $users = Admin::all();
-        $groups = ChatGroup::whereHas('members', function ($query) {
-            $query->where('admins.id', '=', 1);
+        $groups = ChatGroup::with('members')->whereHas('members', function ($query) {
+            $query->where('admins.id', '=', Auth::user()->id);
         })->get();
 
         $conversations = Conversation::where('created_by', Auth::user()->id)->where('is_group',0)->orWhere('chat_with', Auth::user()->id)->get();

@@ -37,6 +37,21 @@ return new class extends Migration
                         'member_id' => '3',
                         'group_id' => 1,
                     ),
+                3=>
+                    array(
+                        'member_id' => '1',
+                        'group_id' => 2,
+                    ),
+                4=>
+                    array(
+                        'member_id' => '2',
+                        'group_id' => 2,
+                    ),
+                5=>
+                    array(
+                        'member_id' => '4',
+                        'group_id' => 2,
+                    ),
             ));
     }
 

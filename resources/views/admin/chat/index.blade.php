@@ -193,15 +193,17 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
                                     </span>
                                     <div class="chat-info flex-grow-1">
                                         <h5 class="mb-0">{{$group->name}}</h5>
-                                        {{--                                            @foreach($conversations as $conversation)--}}
-                                        {{--                                                @if($conversation->created_by == Auth::user()->id && $conversation->chat_with == $user->id)--}}
-                                        {{--                                                    <p class="card-text text-truncate">{{$conversation->messages->last()->message}}</p>--}}
-                                        {{--                                                    @break--}}
-                                        {{--                                                @elseif($conversation->created_by == $user->id && $conversation->chat_with ==Auth::user()->id)--}}
-                                        {{--                                                    <p class="card-text text-truncate">{{$conversation->messages->last()->message}}</p>--}}
-                                        {{--                                                    @break--}}
-                                        {{--                                                @endif--}}
-                                        {{--                                            @endforeach--}}
+                                        <span class="card-text text-truncate">you ,</span>
+                                        @foreach($group->members as $member)
+                                            @if($member->id != Auth::user()->id)
+                                                <span class="card-text text-truncate">{{$member->name}}</span>
+                                                @if($loop->index == 2)
+                                                    <span class="card-text text-truncate">...</span>
+                                                    @break
+                                                @endif
+                                                <span class="card-text text-truncate">,</span>
+                                            @endif
+                                        @endforeach
 
                                     </div>
                                     <div class="chat-meta text-nowrap">
@@ -431,11 +433,6 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
 @endsection
 
 @section('extra_script')
-    {{--    <script src="{{asset('build/assets/app-029dff7a.js')}}"></script>--}}
-    {{--    <script>--}}
-    {{--        Echo.channel('chat')--}}
-    {{--            .listen('MessageSent', (e) => console.log('Message: ' + e.message));--}}
-    {{--    </script>--}}
 
     <script src="{{asset('backend/app-assets/js/scripts/pages/app-chat.js')}}"></script>
 
@@ -588,9 +585,7 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
             // console.clear();
             var currentUser = $('#current_user').val()
             var conversationId = $('.conversation_value').val();
-            var chatWith = $('.chat_with_value').val();
             if(data.user.id != currentUser) {
-                // alert(JSON.stringify(data.user.name + " has messaged you"));
                 Push.create("New SMS!", {
                     body: data.user.name + " has messaged you",
                     timeout: 5000,

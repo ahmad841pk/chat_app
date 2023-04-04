@@ -26,7 +26,13 @@ return new class extends Migration
                     array(
                         'created_by' => '1',
                         'conversation_id' => 1,
-                        'name' => 'laravel',
+                        'name' => 'Laravel',
+                    ),
+                1=>
+                    array(
+                        'created_by' => '1',
+                        'conversation_id' => 2,
+                        'name' => 'React',
                     ),
             ));
     }
