@@ -48,8 +48,12 @@ class ChatsController extends Controller
         $user_id = $request->user_id;
         $second_user = Admin::find($user_id);
 
-        $conversation = Conversation::with('messages')
-            ->where(function ($query) use ($user_id) {
+        $conversation = Conversation::with(['messages' => function($query) {
+            $query->select('id', 'conversation_id','creator_id', 'message')
+                ->with(['creator' => function($query) {
+                    $query->select('id','name');
+                }]);
+        }])->where(function ($query) use ($user_id) {
                 $query->where('created_by', Auth::user()->id)
                     ->where('chat_with', $user_id);
             })
@@ -62,6 +66,24 @@ class ChatsController extends Controller
             'conversation' => $conversation,
             'current_user'=>Auth::user()->id,
             'second_user' => $second_user
+        ]);
+    }
+
+    public function fetchGroupMessages(Request $request)
+    {
+        $group_id = $request->group_id;
+        $group = ChatGroup::with(['conversation' => function($query) {
+            $query->select('id')
+                ->with(['messages' => function($query) {
+                    $query->select('id', 'conversation_id','creator_id', 'message')
+                        ->with(['creator' => function($query) {
+                            $query->select('id','name');
+                        }]);
+                }]);
+        }])->findOrFail($group_id);
+        return response()->json([
+            'group' => $group,
+            'current_user'=>Auth::user()->id,
         ]);
     }
 
@@ -86,22 +108,6 @@ class ChatsController extends Controller
         return response()->json(['conversation_id' => $conversation_id]);
     }
 
-    public function fetchGroupMessages(Request $request)
-    {
-        $group_id = $request->group_id;
-        $group = ChatGroup::with(['conversation' => function($query) {
-            $query->select('id')
-                ->with(['messages' => function($query) {
-                    $query->select('id', 'conversation_id','creator_id', 'message')
-                        ->with(['creator' => function($query) {
-                            $query->select('id','name');
-                        }]);
-                }]);
-        }])->findOrFail($group_id);
-        return response()->json([
-            'group' => $group,
-            'current_user'=>Auth::user()->id,
-        ]);
-    }
+
 
 }

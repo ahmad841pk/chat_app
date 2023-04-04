@@ -501,6 +501,7 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
                                 var html = '<div class="chat chat-left">' +
                                     '<div class="chat-body">' +
                                     '<div class="chat-content">' +
+                                    '<p style="font-size: 12px; color:green; text-decoration: underline;">'+chat[i].creator.name+'</p>'+
                                     '<p>' + chat[i].message + '</p>' +
                                     '</div>' +
                                     '</div>' +
@@ -544,7 +545,6 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
                                 var html = '<div class="chat">' +
                                     '<div class="chat-body">' +
                                     '<div class="chat-content">' +
-                                    '<p style="font-size: 12px; color:white; text-decoration: underline;">'+chat[i].creator.name+'</p>'+
                                     '<p>' + chat[i].message + '</p>' +
                                     '</div>' +
                                     '</div>' +
@@ -600,7 +600,7 @@ Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw 
                 var html = '<div class="chat chat-left">' +
                     '<div class="chat-body">' +
                     '<div class="chat-content">' +
-                    // '<p style="font-size: 12px; color:green; text-decoration: underline;">'+data.message.creator.name+'</p>'+
+                    '<p style="font-size: 12px; color:green; text-decoration: underline;">'+data.user.name+'</p>'+
                     '<p>' + data.message.message + '</p>' +
                     '</div>' +
                     '</div>' +
